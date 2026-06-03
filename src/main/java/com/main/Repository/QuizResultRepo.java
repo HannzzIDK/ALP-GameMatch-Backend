@@ -1,7 +1,6 @@
 package com.main.Repository;
-
-import org.springframework.data.repository.CrudRepository;
-
-public interface QuizResultRepo extends CrudRepository<com.main.Model.QuizResult, Long> {
-
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.QuizResult;
+public interface QuizResultRepo extends JpaRepository <QuizResult, Long> {
+    
 }

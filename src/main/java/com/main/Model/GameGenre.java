@@ -1,5 +1,4 @@
 package com.main.Model;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -10,7 +9,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "game_genre")
-public class GameGenre {
+public class GameGenre {    
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,7 +1,7 @@
 package com.main.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.AnswerOption;
 
-import org.springframework.data.repository.CrudRepository;
-
-public interface AnswerOptionRepo extends CrudRepository<com.main.Model.AnswerOption, Integer> {
-
+public interface AnswerOptionRepo extends JpaRepository <AnswerOption, Integer> {
+    
 }

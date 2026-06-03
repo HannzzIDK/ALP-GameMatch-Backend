@@ -1,7 +1,7 @@
 package com.main.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.AnswerWeight;
 
-import org.springframework.data.repository.CrudRepository;
-
-public interface AnswerWeightRepo extends CrudRepository<com.main.Model.AnswerWeight, Integer> {
-
+public interface AnswerWeightRepo extends JpaRepository <AnswerWeight, Integer> {
+    
 }
