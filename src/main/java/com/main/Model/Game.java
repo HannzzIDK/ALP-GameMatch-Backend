@@ -1,5 +1,5 @@
-package com.main.Games;
-import com.main.Favorite.Favorite;
+package com.main.Model;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -32,10 +32,10 @@ public class Game {
     @OneToMany(mappedBy = "game")
     private List<GameMood> gameMoods;
 
-
     public Integer getGameId() {
         return gameId;
     }
+
     public void setGameId(Integer gameId) {
         this.gameId = gameId;
     }
@@ -43,6 +43,7 @@ public class Game {
     public String getTitle() {
         return title;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -50,6 +51,7 @@ public class Game {
     public String getDescription() {
         return description;
     }
+
     public void setDescription(String description) {
         this.description = description;
     }
@@ -57,6 +59,7 @@ public class Game {
     public LocalDate getReleaseDate() {
         return releaseDate;
     }
+
     public void setReleaseDate(LocalDate releaseDate) {
         this.releaseDate = releaseDate;
     }
@@ -64,6 +67,7 @@ public class Game {
     public String getDeveloper() {
         return developer;
     }
+
     public void setDeveloper(String developer) {
         this.developer = developer;
     }
@@ -71,6 +75,7 @@ public class Game {
     public String getPublisher() {
         return publisher;
     }
+
     public void setPublisher(String publisher) {
         this.publisher = publisher;
     }
@@ -78,6 +83,7 @@ public class Game {
     public String getImageUrl() {
         return imageUrl;
     }
+
     public void setImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
     }
@@ -85,6 +91,7 @@ public class Game {
     public Float getPrice() {
         return price;
     }
+
     public void setPrice(Float price) {
         this.price = price;
     }
@@ -92,6 +99,7 @@ public class Game {
     public GameTierEnum getGameTier() {
         return gameTier;
     }
+
     public void setGameTier(GameTierEnum gameTier) {
         this.gameTier = gameTier;
     }
@@ -99,6 +107,7 @@ public class Game {
     public List<Favorite> getFavorites() {
         return favorites;
     }
+
     public void setFavorites(List<Favorite> favorites) {
         this.favorites = favorites;
     }
@@ -106,6 +115,7 @@ public class Game {
     public List<GameGenre> getGameGenres() {
         return gameGenres;
     }
+
     public void setGameGenres(List<GameGenre> gameGenres) {
         this.gameGenres = gameGenres;
     }
@@ -113,6 +123,7 @@ public class Game {
     public List<GameMood> getGameMoods() {
         return gameMoods;
     }
+
     public void setGameMoods(List<GameMood> gameMoods) {
         this.gameMoods = gameMoods;
     }

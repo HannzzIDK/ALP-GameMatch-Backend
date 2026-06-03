@@ -1,9 +1,13 @@
-package com.main.Favorite;
-import com.main.Games.Game;
-import com.main.Users.User;
-import jakarta.persistence.*;
-import java.time.LocalDateTime;
+package com.main.Model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "favorites")
@@ -12,7 +16,7 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer favoriteId;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
@@ -25,6 +29,7 @@ public class Favorite {
     public Integer getFavoriteId() {
         return favoriteId;
     }
+
     public void setFavoriteId(Integer favoriteId) {
         this.favoriteId = favoriteId;
     }
@@ -32,6 +37,7 @@ public class Favorite {
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -39,6 +45,7 @@ public class Favorite {
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
@@ -46,6 +53,7 @@ public class Favorite {
     public LocalDateTime getSavedAt() {
         return savedAt;
     }
+
     public void setSavedAt(LocalDateTime savedAt) {
         this.savedAt = savedAt;
     }

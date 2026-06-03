@@ -1,4 +1,5 @@
-package com.main.Games;
+package com.main.Model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,6 +23,7 @@ public class Genre {
     public Integer getGenreId() {
         return genreId;
     }
+
     public void setGenreId(Integer genreId) {
         this.genreId = genreId;
     }
@@ -29,6 +31,7 @@ public class Genre {
     public String getGenreName() {
         return genreName;
     }
+
     public void setGenreName(String genreName) {
         this.genreName = genreName;
     }
@@ -36,6 +39,7 @@ public class Genre {
     public List<GameGenre> getGameGenres() {
         return gameGenres;
     }
+
     public void setGameGenres(List<GameGenre> gameGenres) {
         this.gameGenres = gameGenres;
     }

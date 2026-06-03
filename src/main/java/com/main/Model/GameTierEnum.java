@@ -1,4 +1,4 @@
-package com.main.Games;
+package com.main.Model;
 
 public enum GameTierEnum {
     LOW,

@@ -1,4 +1,5 @@
-package com.main.Games;
+package com.main.Model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -26,6 +27,7 @@ public class GameMood {
     public Integer getGameMoodId() {
         return gameMoodId;
     }
+
     public void setGameMoodId(Integer gameMoodId) {
         this.gameMoodId = gameMoodId;
     }
@@ -33,6 +35,7 @@ public class GameMood {
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
@@ -40,8 +43,8 @@ public class GameMood {
     public Mood getMood() {
         return mood;
     }
+
     public void setMood(Mood mood) {
         this.mood = mood;
     }
 }
-

@@ -1,5 +1,5 @@
-package com.main.Quiz;
-import com.main.Users.User;
+package com.main.Model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -8,6 +8,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "quiz_results")
 public class QuizResult {
@@ -25,6 +26,7 @@ public class QuizResult {
     public Integer getQuizResultId() {
         return quizResultId;
     }
+
     public void setQuizResultId(Integer quizResultId) {
         this.quizResultId = quizResultId;
     }
@@ -32,6 +34,7 @@ public class QuizResult {
     public User getUser() {
         return user;
     }
+
     public void setUser(User user) {
         this.user = user;
     }
@@ -39,6 +42,7 @@ public class QuizResult {
     public LocalDateTime getCompletedAt() {
         return completedAt;
     }
+
     public void setCompletedAt(LocalDateTime completedAt) {
         this.completedAt = completedAt;
     }
@@ -46,6 +50,7 @@ public class QuizResult {
     public Double getTotalScore() {
         return totalScore;
     }
+
     public void setTotalScore(Double totalScore) {
         this.totalScore = totalScore;
     }
