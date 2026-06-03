@@ -6,6 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+
 @Entity
 @Table(name = "answer_options")
 public class AnswerOption {
@@ -23,6 +24,7 @@ public class AnswerOption {
     public Integer getAnswerOptionId() {
         return answerOptionId;
     }
+
     public void setAnswerOptionId(Integer answerOptionId) {
         this.answerOptionId = answerOptionId;
     }
@@ -30,6 +32,7 @@ public class AnswerOption {
     public Question getQuestion() {
         return question;
     }
+
     public void setQuestion(Question question) {
         this.question = question;
     }
@@ -37,6 +40,7 @@ public class AnswerOption {
     public String getAnswerText() {
         return answerText;
     }
+
     public void setAnswerText(String answerText) {
         this.answerText = answerText;
     }
@@ -44,6 +48,7 @@ public class AnswerOption {
     public Integer getAnswerOrder() {
         return answerOrder;
     }
+
     public void setAnswerOrder(Integer answerOrder) {
         this.answerOrder = answerOrder;
     }

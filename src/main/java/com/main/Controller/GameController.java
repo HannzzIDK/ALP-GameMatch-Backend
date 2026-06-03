@@ -1,0 +1,24 @@
+package com.main.Controller;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import com.main.Model.Game;
+import com.main.Repository.GameRepo;
+
+@RestController
+@RequestMapping("/game")
+public class GameController {
+
+    @Autowired
+    private GameRepo gameRepo;
+
+    @GetMapping("/{gameId}")
+    public Game getGameById(@PathVariable Long gameId) {
+        return gameRepo.findById(gameId).orElse(null);
+    }
+
+    @GetMapping("/match")
+    public Iterable<Game> matchGames() {
+        return gameRepo.findAll();
+    }
+}

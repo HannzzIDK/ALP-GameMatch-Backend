@@ -27,6 +27,7 @@ public class AnswerWeight {
     public Integer getWeightId() {
         return weightId;
     }
+
     public void setWeightId(Integer weightId) {
         this.weightId = weightId;
     }
@@ -34,6 +35,7 @@ public class AnswerWeight {
     public AnswerOption getAnswerOption() {
         return answerOption;
     }
+
     public void setAnswerOption(AnswerOption answerOption) {
         this.answerOption = answerOption;
     }
@@ -41,6 +43,7 @@ public class AnswerWeight {
     public Genre getGenre() {
         return genre;
     }
+
     public void setGenre(Genre genre) {
         this.genre = genre;
     }
@@ -48,6 +51,7 @@ public class AnswerWeight {
     public Double getWeightScore() {
         return weightScore;
     }
+
     public void setWeightScore(Double weightScore) {
         this.weightScore = weightScore;
     }

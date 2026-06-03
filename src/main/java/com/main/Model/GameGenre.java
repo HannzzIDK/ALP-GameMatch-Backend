@@ -26,6 +26,7 @@ public class GameGenre {
     public Integer getGameGenreId() {
         return gameGenreId;
     }
+
     public void setGameGenreId(Integer gameGenreId) {
         this.gameGenreId = gameGenreId;
     }
@@ -33,6 +34,7 @@ public class GameGenre {
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
@@ -40,6 +42,7 @@ public class GameGenre {
     public Genre getGenre() {
         return genre;
     }
+
     public void setGenre(Genre genre) {
         this.genre = genre;
     }

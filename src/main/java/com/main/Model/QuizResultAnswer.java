@@ -14,7 +14,7 @@ public class QuizResultAnswer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer quizResultAnswerId;
-    
+
     @ManyToOne
     @JoinColumn(name = "quiz_result_id")
     private QuizResult quizResult;
@@ -30,6 +30,7 @@ public class QuizResultAnswer {
     public Integer getQuizResultAnswerId() {
         return quizResultAnswerId;
     }
+
     public void setQuizResultAnswerId(Integer quizResultAnswerId) {
         this.quizResultAnswerId = quizResultAnswerId;
     }
@@ -37,6 +38,7 @@ public class QuizResultAnswer {
     public QuizResult getQuizResult() {
         return quizResult;
     }
+
     public void setQuizResult(QuizResult quizResult) {
         this.quizResult = quizResult;
     }
@@ -44,6 +46,7 @@ public class QuizResultAnswer {
     public Question getQuestion() {
         return question;
     }
+
     public void setQuestion(Question question) {
         this.question = question;
     }
@@ -51,6 +54,7 @@ public class QuizResultAnswer {
     public AnswerOption getAnswerOption() {
         return answerOption;
     }
+
     public void setAnswerOption(AnswerOption answerOption) {
         this.answerOption = answerOption;
     }

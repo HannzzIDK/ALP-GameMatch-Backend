@@ -26,6 +26,7 @@ public class GameMood {
     public Integer getGameMoodId() {
         return gameMoodId;
     }
+
     public void setGameMoodId(Integer gameMoodId) {
         this.gameMoodId = gameMoodId;
     }
@@ -33,6 +34,7 @@ public class GameMood {
     public Game getGame() {
         return game;
     }
+
     public void setGame(Game game) {
         this.game = game;
     }
@@ -40,8 +42,8 @@ public class GameMood {
     public Mood getMood() {
         return mood;
     }
+
     public void setMood(Mood mood) {
         this.mood = mood;
     }
 }
-
