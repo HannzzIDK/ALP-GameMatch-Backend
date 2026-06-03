@@ -1,6 +1,4 @@
-package com.main.Favorite;
-import com.main.Games.Game;
-import com.main.Users.User;
+package com.main.Model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 

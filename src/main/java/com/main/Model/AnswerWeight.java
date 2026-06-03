@@ -1,5 +1,4 @@
-package com.main.Answer;
-import com.main.Games.Genre;
+package com.main.Model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

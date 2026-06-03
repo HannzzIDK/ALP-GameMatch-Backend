@@ -1,6 +1,4 @@
-package com.main.Quiz;
-import com.main.Answer.AnswerOption;
-import com.main.Question.Question;
+package com.main.Model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

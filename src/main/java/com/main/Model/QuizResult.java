@@ -1,5 +1,4 @@
-package com.main.Quiz;
-import com.main.Users.User;
+package com.main.Model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

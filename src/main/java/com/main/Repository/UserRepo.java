@@ -1,6 +1,6 @@
-package com.main.Users;
-import org.springframework.data.repository.CrudRepository;
-
-public interface UserRepo extends CrudRepository<User, Long> {
+package com.main.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.User;
+public interface UserRepo extends JpaRepository<User, Long> {
     
 }

@@ -1,5 +1,4 @@
-package com.main.Games;
-import com.main.Favorite.Favorite;
+package com.main.Model;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.List;

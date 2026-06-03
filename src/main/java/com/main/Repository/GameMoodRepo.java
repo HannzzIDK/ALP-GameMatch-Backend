@@ -1,6 +1,6 @@
-package com.main.Games;
-import org.springframework.data.repository.CrudRepository;
-
-public interface GameMoodRepo extends CrudRepository<GameMood, Integer> {
+package com.main.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.GameMood;
+public interface GameMoodRepo extends JpaRepository<GameMood, Integer> {
     
 }

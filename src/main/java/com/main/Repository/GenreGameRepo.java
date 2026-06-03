@@ -1,6 +1,6 @@
-package com.main.Games;
-import org.springframework.data.repository.CrudRepository;
-
-public interface GenreGameRepo extends CrudRepository <GameGenre, Integer> {
+package com.main.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
+import com.main.Model.GameGenre;
+public interface GenreGameRepo extends JpaRepository <GameGenre, Integer> {
     
 }

@@ -1,8 +1,6 @@
-package com.main.Users;
+package com.main.Model;
 
-import com.main.Quiz.QuizResult;
 import java.time.LocalDateTime;
-import com.main.Favorite.Favorite;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
