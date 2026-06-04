@@ -16,9 +16,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
-@RequestMapping("/quiz")
+@RequestMapping("/api/v1/quiz")
 public class QuizController {
-    
+
     @Autowired
     private QuestionRepo questionRepo;
 
@@ -33,12 +33,12 @@ public class QuizController {
 
     @Autowired
     private AnswerOptionRepo answerOptionRepo;
-    
+
     @GetMapping("/questions")
     public Iterable<Question> getAllQuestion() {
         return questionRepo.findAll();
     }
-    
+
     public static class QuizSubmission {
         private Integer userId;
         private List<AnswerSubmission> answers;
@@ -80,14 +80,14 @@ public class QuizController {
             this.answerOptionId = answerOptionId;
         }
     }
-    
+
     @PostMapping("/submit")
     public String submitQuiz(@RequestBody QuizSubmission submission) {
         User user = userRepo.findById(Long.valueOf(submission.getUserId())).orElse(null);
         if (user == null) {
             return "User not found";
         }
-        
+
         QuizResult result = new QuizResult();
         result.setUser(user);
         result.setCompletedAt(LocalDateTime.now());

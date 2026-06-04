@@ -6,7 +6,7 @@ import com.main.Model.Game;
 import com.main.Repository.GameRepo;
 
 @RestController
-@RequestMapping("/game")
+@RequestMapping("/api/v1/game")
 public class GameController {
 
     @Autowired

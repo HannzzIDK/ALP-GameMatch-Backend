@@ -8,20 +8,20 @@ import com.main.Repository.MoodRepo;
 import com.main.Repository.GenreRepo;
 
 @RestController
-@RequestMapping("/reference")
+@RequestMapping("/api/v1/reference")
 public class ReferenceController {
-    
+
     @Autowired
     private MoodRepo moodRepo;
 
     @Autowired
     private GenreRepo genreRepo;
-    
+
     @GetMapping("/moods")
     public Iterable<Mood> getAllMood() {
         return moodRepo.findAll();
     }
-    
+
     @GetMapping("/genres")
     public Iterable<Genre> getAllGenre() {
         return genreRepo.findAll();

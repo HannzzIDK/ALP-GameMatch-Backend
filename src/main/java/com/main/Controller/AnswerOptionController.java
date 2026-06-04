@@ -15,7 +15,7 @@ import com.main.Repository.AnswerOptionRepo;
 import com.main.Repository.QuestionRepo;
 
 @Controller
-@RequestMapping(path = "/answerOptions")
+@RequestMapping(path = "/api/v1/answerOptions")
 public class AnswerOptionController {
 
     @Autowired
@@ -30,7 +30,8 @@ public class AnswerOptionController {
     }
 
     @PostMapping("/")
-    public @ResponseBody String addAnswerOption(@RequestParam Long questionId, @RequestParam String answerText, @RequestParam Integer answerOrder) {
+    public @ResponseBody String addAnswerOption(@RequestParam Long questionId, @RequestParam String answerText,
+            @RequestParam Integer answerOrder) {
         Question question = questionRepo.findById(questionId).orElse(null);
         if (question == null) {
             return "Question not found";
@@ -44,7 +45,8 @@ public class AnswerOptionController {
     }
 
     @PutMapping("/")
-    public @ResponseBody String updateAnswerOption(@RequestParam Integer id, @RequestParam Long questionId, @RequestParam String answerText, @RequestParam Integer answerOrder) {
+    public @ResponseBody String updateAnswerOption(@RequestParam Integer id, @RequestParam Long questionId,
+            @RequestParam String answerText, @RequestParam Integer answerOrder) {
         AnswerOption answerOption = repo.findById(id).orElse(null);
         if (answerOption == null) {
             return "AnswerOption not found";
