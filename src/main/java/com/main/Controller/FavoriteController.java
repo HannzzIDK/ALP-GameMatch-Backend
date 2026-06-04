@@ -1,6 +1,12 @@
 package com.main.Controller;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 import com.main.Model.Favorite;
 import com.main.Model.Game;
@@ -11,6 +17,7 @@ import com.main.Repository.UserRepo;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/v1/favorites")
@@ -42,23 +49,21 @@ public class FavoriteController {
 
     @DeleteMapping("/{gameId}")
     public String removeFavorite(@PathVariable Long gameId, @RequestParam Long userId) {
-        for (Favorite fav : favoriteRepo.findAll()) {
-            if (fav.getUser().getUserId().equals(userId.intValue())
-                    && fav.getGame().getGameId().equals(gameId.intValue())) {
-                favoriteRepo.delete(fav);
-                return "Removed from favorites";
-            }
+        Optional<Favorite> favorite = favoriteRepo.findByUser_UserIdAndGame_GameId(userId.intValue(),
+                gameId.intValue());
+        if (favorite.isPresent()) {
+            favoriteRepo.delete(favorite.get());
+            return "Removed from favorites";
         }
         return "Favorite not found";
     }
 
     @GetMapping("/")
     public Iterable<Game> getFavorites(@RequestParam Long userId) {
+        List<Favorite> favorites = favoriteRepo.findByUser_UserId(userId.intValue());
         List<Game> games = new ArrayList<>();
-        for (Favorite fav : favoriteRepo.findAll()) {
-            if (fav.getUser().getUserId().equals(userId.intValue())) {
-                games.add(fav.getGame());
-            }
+        for (Favorite fav : favorites) {
+            games.add(fav.getGame());
         }
         return games;
     }

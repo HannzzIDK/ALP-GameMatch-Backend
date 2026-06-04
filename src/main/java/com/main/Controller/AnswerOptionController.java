@@ -1,6 +1,5 @@
 package com.main.Controller;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -8,13 +7,14 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.main.Model.AnswerOption;
 import com.main.Model.Question;
 import com.main.Repository.AnswerOptionRepo;
 import com.main.Repository.QuestionRepo;
 
-@Controller
+@RestController
 @RequestMapping(path = "/api/v1/answerOptions")
 public class AnswerOptionController {
 
