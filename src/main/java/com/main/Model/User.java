@@ -18,7 +18,7 @@ public class User {
     private Integer userId;
     private String username;
     private String email;
-    private Integer googleAccountId;
+    private String googleAccountId;
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
@@ -51,11 +51,11 @@ public class User {
         this.email = email;
     }
 
-    public Integer getGoogleAccountId() {
+    public String getGoogleAccountId() {
         return googleAccountId;
     }
 
-    public void setGoogleAccountId(Integer googleAccountId) {
+    public void setGoogleAccountId(String googleAccountId) {
         this.googleAccountId = googleAccountId;
     }
 

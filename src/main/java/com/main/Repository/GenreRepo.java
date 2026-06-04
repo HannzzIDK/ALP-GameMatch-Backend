@@ -1,7 +1,7 @@
 package com.main.Repository;
 
-import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface GenreRepo extends CrudRepository<com.main.Model.Genre, Long> {
+public interface GenreRepo extends JpaRepository<com.main.Model.Genre, Long> {
 
 }
