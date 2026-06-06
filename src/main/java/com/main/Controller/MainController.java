@@ -45,4 +45,9 @@ public class MainController {
     public String collection() {
         return "collection";
     }
+
+    @GetMapping("/detail")
+    public String detail() {
+        return "detail";
+    }
 }

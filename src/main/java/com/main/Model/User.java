@@ -22,9 +22,6 @@ public class User {
     private LocalDateTime createdAt;
 
     @OneToMany(mappedBy = "user")
-    private List<QuizResult> quizResults;
-
-    @OneToMany(mappedBy = "user")
     private List<Favorite> favorites;
 
     public Integer getUserId() {

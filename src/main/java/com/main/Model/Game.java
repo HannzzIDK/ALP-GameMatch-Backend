@@ -1,4 +1,5 @@
 package com.main.Model;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -25,19 +26,16 @@ public class Game {
     private String developer;
     private String publisher;
     private String imageUrl;
-    private Float price;
+    private String price;
+    private String genres;
+    private String spec;
+    private String budget;
 
     @Enumerated(EnumType.STRING)
     private GameTierEnum gameTier;
 
     @OneToMany(mappedBy = "game")
     private List<Favorite> favorites;
-
-    @OneToMany(mappedBy = "game")
-    private List<GameGenre> gameGenres;
-
-    @OneToMany(mappedBy = "game")
-    private List<GameMood> gameMoods;
 
     public Integer getGameId() {
         return gameId;
@@ -95,12 +93,36 @@ public class Game {
         this.imageUrl = imageUrl;
     }
 
-    public Float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getGenres() {
+        return genres;
+    }
+
+    public void setGenres(String genres) {
+        this.genres = genres;
+    }
+
+    public String getSpec() {
+        return spec;
+    }
+
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
+
+    public String getBudget() {
+        return budget;
+    }
+
+    public void setBudget(String budget) {
+        this.budget = budget;
     }
 
     public GameTierEnum getGameTier() {
@@ -117,22 +139,6 @@ public class Game {
 
     public void setFavorites(List<Favorite> favorites) {
         this.favorites = favorites;
-    }
-
-    public List<GameGenre> getGameGenres() {
-        return gameGenres;
-    }
-
-    public void setGameGenres(List<GameGenre> gameGenres) {
-        this.gameGenres = gameGenres;
-    }
-
-    public List<GameMood> getGameMoods() {
-        return gameMoods;
-    }
-
-    public void setGameMoods(List<GameMood> gameMoods) {
-        this.gameMoods = gameMoods;
     }
 
 }

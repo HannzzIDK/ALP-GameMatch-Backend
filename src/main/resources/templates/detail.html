@@ -31,20 +31,23 @@
       </div>
       
       <div class="detail-info">
-        <h1 class="detail-title mb-4">Judul <span class="text-blue">Game</span></h1>
-          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25 ">
-            <p class="mb-0"><strong>DEVELOPER:</strong> SANTA MONICA STUDIO</p>
+    <h1 class="detail-title mb-4" id="game-title">Memuat...</h1>
+    
+    <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
+        <p class="mb-0" id="game-dev">DEVELOPER: -</p>
+    </div>
+    <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
+        <p class="mb-0" id="game-release">RILIS: -</p>
+    </div>
+    <button class="btn btn-gold" id="btn-fav">Tambahkan ke Favorit</button>
+</div>
+          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
+            <p class="mb-0" id="game-platform"></p>
           </div>
           <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
-            <p class="mb-0"><strong>RILIS:</strong> 22 Maret 2005</p>
-          </div>
-          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
-            <p class="mb-0"><strong>PLATFORM:</strong> PC, PS5, XBOX SERIES X</p>
-          </div>
-          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
-            <p class="mb-0"><strong>GENRE:</strong> ACTION, ADVENTURE, RPG</p>
+            <p class="mb-0" id="game-genre"></p>
         </div>
-          <button class="btn btn-gold" id="btn-fav">Tambahkan ke Favorit</button>
+          <button class="btn btn-gold" id="btn-fav" method="post" th:action="@{/favorite}">Tambahkan ke Favorit</button>
         </div>
       </div>
     </div>
@@ -55,19 +58,15 @@
           <span class="icon"></span>
           Tentang <span class="text-blue">Game ini</span>
         </h3>
-        <p class="detail-desc">
-          God of war Ragranok adalah game laga petualangan yang dikembangkan oleh santa monica 
-          studio. Melanjutkan kisah epik tahun 2018, game ini berlatar di skandivania kuno dengan
-          mitologi nordik. Pemain mengendalikan kratos dan putranya, Atreus(Loki), dalam upaya 
-          mencegah kiamat Ragnarok dan menghadapi para dewa seperti thor dan Odin
+        <p class="detail-desc" id="game-description">
         </p>
       </div>
 
       <div class="detail-section">
         <h3 class="detail-section-title">
-          Spesifikasi <span class="text-blue">Sistem</span>
+          Spesifikasi <span class="text-blue" >Sistem</span>
         </h3>
-        <p class="spec-title text-white border-white">MINIMUM</p>
+        <p class="spec-title text-white border-white" th>MINIMUM</p>
             <p><strong>OS:</strong> Windows 10 64-bit</p>
             <p><strong>Processor:</strong> Intel Core i5-8400 / AMD Ryzen 5 1600</p>
             <p><strong>RAM:</strong> 12 GB RAM</p>
