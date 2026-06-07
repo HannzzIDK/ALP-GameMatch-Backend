@@ -1,70 +1,106 @@
 package com.main.Controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.beans.factory.annotation.Autowired;
 import com.main.Model.Favorite;
 import com.main.Model.Game;
 import com.main.Model.User;
 import com.main.Repository.FavoriteRepo;
 import com.main.Repository.GameRepo;
 import com.main.Repository.UserRepo;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/v1/favorites")
+@RequiredArgsConstructor
+@CrossOrigin(origins = "*")
 public class FavoriteController {
 
-    @Autowired
-    private FavoriteRepo favoriteRepo;
+    private final UserRepo userRepo;
+    private final GameRepo gameRepo;
+    private final FavoriteRepo favoriteRepo;
 
-    @Autowired
-    private UserRepo userRepo;
+    // Menarik daftar game favorit milik user (Dipanggil oleh halaman Favorite)
+    @GetMapping("/{email}")
+    public ResponseEntity<List<Game>> getUserFavorites(@PathVariable String email) {
+        User user = userRepo.findByEmail(email).orElse(null);
+        if (user == null) {
+            return ResponseEntity.ok(java.util.Collections.emptyList());
+        }
 
-    @Autowired
-    private GameRepo gameRepo;
+        // Ambil semua data Favorite milik user ini, lalu ekstrak hanya Game-nya saja
+        List<Game> favGames = favoriteRepo.findAll().stream()
+                .filter(fav -> fav.getUser().getUserId().equals(user.getUserId()))
+                .map(Favorite::getGame)
+                .collect(Collectors.toList());
 
-    @PostMapping("/{gameId}")
-    public String addFavorite(@PathVariable Long gameId, @RequestParam Long userId) {
-        User user = userRepo.findById(userId).orElse(null);
+        return ResponseEntity.ok(favGames);
+    }
+
+    @PostMapping("/toggle")
+    public ResponseEntity<?> toggleFavorite(@RequestBody Map<String, Object> payload) {
+        String email = (String) payload.get("email");
+        Integer gameId = ((Number) payload.get("gameId")).intValue();
+
         Game game = gameRepo.findById(gameId).orElse(null);
-        if (user == null || game == null) {
-            return "User or Game not found";
+        if (game == null)
+            return ResponseEntity.badRequest().body("Game tidak ditemukan");
+
+        User user = userRepo.findByEmail(email).orElseGet(() -> {
+            User newUser = new User();
+            newUser.setEmail(email);
+            return userRepo.save(newUser);
+        });
+
+        // Cek apakah relasi favorit ini sudah ada
+        Favorite existingFav = favoriteRepo.findAll().stream()
+                .filter(f -> f.getUser().getUserId().equals(user.getUserId()) && f.getGame().getGameId().equals(gameId))
+                .findFirst()
+                .orElse(null);
+
+        if (existingFav != null) {
+            // Jika sudah ada, hapus
+            favoriteRepo.delete(existingFav);
+            return ResponseEntity.ok(Map.of("status", "removed"));
+        } else {
+            // Jika belum ada, buat baru
+            Favorite newFav = new Favorite();
+            newFav.setUser(user);
+            newFav.setGame(game);
+            newFav.setSavedAt(LocalDateTime.now());
+            favoriteRepo.save(newFav);
+            return ResponseEntity.ok(Map.of("status", "added"));
         }
-        Favorite favorite = new Favorite();
-        favorite.setUser(user);
-        favorite.setGame(game);
-        favorite.setSavedAt(LocalDateTime.now());
-        favoriteRepo.save(favorite);
-        return "Added to favorites";
     }
 
-    @DeleteMapping("/{gameId}")
-    public String removeFavorite(@PathVariable Long gameId, @RequestParam Long userId) {
-        Optional<Favorite> favorite = favoriteRepo.findByUser_UserIdAndGame_GameId(userId.intValue(),
-                gameId.intValue());
-        if (favorite.isPresent()) {
-            favoriteRepo.delete(favorite.get());
-            return "Removed from favorites";
-        }
-        return "Favorite not found";
-    }
+    @DeleteMapping("/delete")
+    public ResponseEntity<?> deleteFavorite(@RequestBody Map<String, Object> payload) {
+        String email = (String) payload.get("email");
+        Integer gameId = ((Number) payload.get("gameId")).intValue();
 
-    @GetMapping("/")
-    public Iterable<Game> getFavorites(@RequestParam Long userId) {
-        List<Favorite> favorites = favoriteRepo.findByUser_UserId(userId.intValue());
-        List<Game> games = new ArrayList<>();
-        for (Favorite fav : favorites) {
-            games.add(fav.getGame());
+        Game game = gameRepo.findById(gameId).orElse(null);
+        if (game == null)
+            return ResponseEntity.badRequest().body("Game tidak ditemukan");
+
+        User user = userRepo.findByEmail(email).orElse(null);
+        if (user == null)
+            return ResponseEntity.badRequest().body("User tidak ditemukan");
+
+        Favorite existingFav = favoriteRepo.findAll().stream()
+                .filter(f -> f.getUser().getUserId().equals(user.getUserId()) && f.getGame().getGameId().equals(gameId))
+                .findFirst()
+                .orElse(null);
+
+        if (existingFav != null) {
+            favoriteRepo.delete(existingFav);
+            return ResponseEntity.ok(Map.of("status", "removed"));
+        } else {
+            return ResponseEntity.badRequest().body("Favorite tidak ditemukan");
         }
-        return games;
     }
 }

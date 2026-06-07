@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+
 import java.util.List;
 
 @Entity
@@ -20,9 +24,6 @@ public class User {
     private String email;
     private String googleAccountId;
     private LocalDateTime createdAt;
-
-    @OneToMany(mappedBy = "user")
-    private List<QuizResult> quizResults;
 
     @OneToMany(mappedBy = "user")
     private List<Favorite> favorites;
@@ -67,4 +68,11 @@ public class User {
         this.createdAt = createdAt;
     }
 
+    @ManyToMany(fetch = jakarta.persistence.FetchType.LAZY)
+    @JoinTable(name = "favorites", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "game_id"))
+    private java.util.Set<Game> favoriteGames = new java.util.HashSet<>();
+
+    public java.util.Set<Game> getFavoriteGames() {
+        return this.favoriteGames;
+    }
 }
