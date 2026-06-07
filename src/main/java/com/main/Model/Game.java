@@ -11,6 +11,7 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Column;
 import java.time.LocalDate;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name = "games")
@@ -34,6 +35,7 @@ public class Game {
     @Enumerated(EnumType.STRING)
     private GameTierEnum gameTier;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "game")
     private List<Favorite> favorites;
 

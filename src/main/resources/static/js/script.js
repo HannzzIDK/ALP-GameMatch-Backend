@@ -9,6 +9,39 @@ const Store = {
 
 const page = document.body.dataset.page || '';
 
+function getAuthHeaders() {
+  const headers = { 'Content-Type': 'application/json' };
+  const token = Store.get('jwt_token');
+  if (token) {
+    headers['Authorization'] = 'Bearer ' + token;
+  } else {
+    const user = Store.get('gm_user');
+    if (user && user.email) {
+      headers['X-User-Email'] = user.email;
+    }
+  }
+  return headers;
+}
+
+function syncFavorites() {
+  const headers = getAuthHeaders();
+  if (headers['Authorization'] || headers['X-User-Email']) {
+    return fetch('/api/v1/favorites', { headers })
+      .then(res => {
+        if (res.ok) return res.json();
+        return [];
+      })
+      .then(favIds => {
+        Store.set('gm_favorites', favIds);
+      })
+      .catch(err => console.error("Error syncing favorites:", err));
+  }
+  return Promise.resolve();
+}
+
+// Sync favorites on script load
+syncFavorites();
+
 // ==================== FUNGSI GLOBAL ====================
 function updateProgress(step, total) {
   const pct   = Math.round((step / total) * 100);
@@ -46,17 +79,20 @@ function initNextStep(validate, href) {
 // ==================== HALAMAN LOGIN ====================
 if (page === 'login') {
   window.handleGoogleResponse = (response) => {
+    const payload = JSON.parse(atob(response.credential.split('.')[1]));
+    const userEmail = payload.email;
+
     fetch('/api/v1/auth/google', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ idToken: response.credential })
     })
-    .then(res => {
-      if (!res.ok) throw new Error('Gagal verifikasi di server');
-      return res.json();
-    })
+    .then(res => res.json())
     .then(data => {
       Store.set('jwt_token', data.token);
+
+      Store.set('gm_user', { email: userEmail }); 
+      
       alert('Login Berhasil!');
       window.location.href = '/home'; 
     })
@@ -64,6 +100,7 @@ if (page === 'login') {
       console.error(err);
       alert('Terjadi kesalahan saat login.');
     });
+  };
   };
 
   window.onload = () => {
@@ -91,7 +128,6 @@ if (page === 'login') {
       window.location.href = '/home';
     });
   }
-}
 
 // ==================== HALAMAN HOME ====================
 if (page === 'home') {
@@ -235,7 +271,6 @@ if (page === 'mm-step4') {
 }
 
 // ==================== HALAMAN REKOMENDASI (result) ====================
-// ==================== HALAMAN REKOMENDASI (result) ====================
 if (page === 'result') {
   // 1. INI DIA YANG HILANG: Ambil jawaban kuesioner user dari LocalStorage
   const quiz = getQuizData();
@@ -317,19 +352,40 @@ if (page === 'result') {
   }
 
   // 5. Event Listener untuk Tombol Favorit
+  // Event Listener untuk Tombol Favorit
   document.addEventListener('click', e => {
     const btn = e.target.closest('.game-card-fav');
     if (!btn) return;
-    const id   = parseInt(btn.dataset.id);
-    let favs   = Store.get('gm_favorites') || [];
-    if (favs.includes(id)) {
-      favs = favs.filter(f => f !== id);
-      btn.classList.remove('active');
-    } else {
-      favs.push(id);
-      btn.classList.add('active');
+    
+    // Ambil ID game dari elemen HTML
+    const gameId = parseInt(btn.dataset.id);
+    
+    // Ambil identitas user (email) dari LocalStorage saat login
+    const user = Store.get('gm_user'); 
+    if (!user || !user.email) {
+      alert("Silakan login terlebih dahulu untuk menyimpan favorit!");
+      return;
     }
-    Store.set('gm_favorites', favs);
+
+    // Tembak API Backend kita
+    fetch('/api/v1/favorites/toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        email: user.email, 
+        gameId: gameId 
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      // Ubah warna tombol (UI) berdasarkan balasan dari Spring Boot
+      if (data.status === 'added') {
+        btn.classList.add('active');
+      } else if (data.status === 'removed') {
+        btn.classList.remove('active');
+      }
+    })
+    .catch(err => console.error("Gagal update favorit:", err));
   });
 
   // 6. Tombol Ulangi Kuesioner
@@ -358,9 +414,10 @@ if (page === 'detail') {
     })
       const favBtn = $('#btn-fav');
       if (favBtn) {
+        const gameId = parseInt(id);
         let favs = Store.get('gm_favorites') || [];
         const updateFavBtn = () => {
-          const isFav = favs.includes(id);
+          const isFav = favs.includes(gameId);
           favBtn.textContent = isFav ? '★ Tersimpan di Favorit' : '♡ Tambahkan ke Favorit';
           favBtn.classList.toggle('btn-gold', isFav);
           favBtn.classList.toggle('btn-outline', !isFav);
@@ -368,11 +425,44 @@ if (page === 'detail') {
         updateFavBtn();
         favBtn.addEventListener('click', () => {
           favs = Store.get('gm_favorites') || [];
-          if (favs.includes(id)) favs = favs.filter(f => f !== id);
-          else favs.push(id);
+          const headers = getAuthHeaders();
+          const isLoggedIn = headers['Authorization'] || headers['X-User-Email'];
+          if (favs.includes(gameId)) {
+            favs = favs.filter(f => f !== gameId);
+            if (isLoggedIn) {
+              fetch(`/api/v1/favorites/${gameId}`, {
+                method: 'DELETE',
+                headers: headers
+              }).catch(err => console.error("Error removing favorite:", err));
+            }
+          } else {
+            favs.push(gameId);
+            if (isLoggedIn) {
+              fetch('/api/v1/favorites', {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify({ gameId: gameId })
+              }).catch(err => console.error("Error adding favorite:", err));
+            }
+          }
           Store.set('gm_favorites', favs);
           updateFavBtn();
         });
+        const user = Store.get('gm_user');
+    if (!user || !user.email) {
+        alert("Silakan login terlebih dahulu!");
+        window.location.href = '/login';
+    }
+
+    // Panggil API beserta email user di ujung URL
+    fetch(`/api/v1/favorites/${user.email}`)
+      .then(res => res.json())
+      .then(favGames => {
+          // Render array favGames ke dalam HTML (grid)
+          console.log("Data favoritku:", favGames);
+          // ... lanjutkan fungsi renderGrid kamu ...
+      })
+      .catch(err => console.error("Gagal load favorit:", err));
       }
     }
 
@@ -380,72 +470,98 @@ if (page === 'detail') {
 
 // ==================== HALAMAN FAVORITE ====================
 if (page === 'favorite') {
-  const quizData = getQuizData();
+  const user = Store.get('gm_user');
   
-  if (!quizData.mood) {
-    alert('Anda harus memulai quiz terlebih dahulu sebelum mengakses halaman Favorite.');
-    window.location.href = '/q1'; 
+  // Jika user belum login, tendang kembali ke halaman login
+  if (!user || !user.email) {
+    alert("Sesi telah habis. Silakan login terlebih dahulu untuk melihat Favorit Anda.");
+    window.location.href = '/login'; 
   } else {
-    const SLOT_COUNT = 8;
-
-    fetch('/api/v1/games')
-      .then(res => res.json())
-      .then(ALL_GAMES => {
-        function renderFav() {
-          const favIds = Store.get('gm_favorites') || [];
-          const favGames = favIds.map(id => ALL_GAMES.find(g => g.gameId === id)).filter(Boolean);
-
-          const countEl = $('#fav-count');
+    
+    // Fungsi untuk menarik dan menampilkan data dari MySQL
+    function loadFavorites() {
+      fetch(`/api/v1/favorites/${user.email}`)
+        .then(res => res.json())
+        .then(favGames => {
+          
+          // 1. Update teks jumlah game
+          const countEl = document.getElementById('fav-count');
           if (countEl) countEl.textContent = favGames.length;
 
-          const grid = $('#fav-grid');
+          // 2. Render grid favorit
+          const grid = document.getElementById('fav-grid');
           if (!grid) return;
 
           let html = '';
+          const SLOT_COUNT = 8; // Menampilkan 8 slot (kosong atau terisi)
+
           for (let i = 0; i < SLOT_COUNT; i++) {
             const g = favGames[i];
             if (g) {
+              // Jika data game ada, buat card-nya
               html += `
-                <div class="fav-slot filled" data-id="${g.gameId}">
-                  <img src="${g.imageUrl}" alt="${g.title}" onerror="this.style.opacity=0" />
-                  <button class="fav-slot-del" data-id="${g.gameId}" title="Hapus dari favorit">✕</button>
+                <div class="fav-slot filled" data-id="${g.gameId || g.id}">
+                  <img src="${g.imageUrl || g.img}" alt="${g.title}" onerror="this.style.opacity=0" />
+                  <button class="fav-slot-del" data-id="${g.gameId || g.id}" title="Hapus dari favorit">✕</button>
                 </div>`;
             } else {
+              // Jika kosong, render kotak slot kosong
               html += `<div class="fav-slot empty"></div>`;
             }
           }
           grid.innerHTML = html;
 
-          $$('.fav-slot-del').forEach(btn => {
+          // 3. Pasang Event Listener untuk tombol hapus (✕)
+          document.querySelectorAll('.fav-slot-del').forEach(btn => {
             btn.addEventListener('click', e => {
-              e.stopPropagation();
-              const id = parseInt(btn.dataset.id);
-              let favs = Store.get('gm_favorites') || [];
-              Store.set('gm_favorites', favs.filter(f => f !== id));
-              renderFav(); 
+              e.stopPropagation(); // Mencegah klik nyasar ke link detail
+              const gameId = parseInt(btn.dataset.id);
+              
+              // Kirim perintah hapus ke Backend
+              fetch('/api/v1/favorites/toggle', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email: user.email, gameId: gameId })
+              })
+              .then(res => res.json())
+              .then(data => {
+                // Jika sukses dihapus dari MySQL, muat ulang tampilannya
+                if (data.status === 'removed') {
+                  loadFavorites(); 
+                }
+              })
+              .catch(err => console.error("Gagal menghapus favorit:", err));
             });
           });
 
-          $$('.fav-slot.filled').forEach(slot => {
+          // 4. Pasang Event Listener jika gambar diklik -> Pergi ke halaman Detail
+          document.querySelectorAll('.fav-slot.filled').forEach(slot => {
             slot.addEventListener('click', e => {
               if (e.target.closest('.fav-slot-del')) return;
               window.location.href = `/detail?id=${slot.dataset.id}`; 
             });
           });
-        }
-        renderFav(); 
-      })
-      .catch(err => console.error("Gagal mengambil data favorit:", err));
 
-    const updateBtn = $('#btn-update');
+        })
+        .catch(err => {
+          console.error("Gagal load data favorit:", err);
+          document.getElementById('fav-grid').innerHTML = `<p class="text-danger w-100 text-center">Gagal memuat data dari server.</p>`;
+        });
+    }
+
+    // Jalankan fungsi load saat halaman pertama kali dibuka
+    loadFavorites();
+
+    // Fungsi tambahan untuk tombol-tombol lain di UI
+    const updateBtn = document.getElementById('btn-update');
     if (updateBtn) {
       updateBtn.addEventListener('click', () => {
-        Store.remove('gm_quiz');
+        Store.remove('gm_quiz'); // Reset kuesioner
         window.location.href = '/q1'; 
       });
     }
 
-    const loadMoreBtn = $('#btn-load-more');
+    const loadMoreBtn = document.getElementById('btn-load-more');
     if (loadMoreBtn) {
       loadMoreBtn.addEventListener('click', () => {
         alert('Semua favorit sudah ditampilkan.');
@@ -453,7 +569,6 @@ if (page === 'favorite') {
     }
   }
 }
-
 // ==================== LOGOUT ====================
 $$('.btn-logout').forEach(btn => {
   btn.addEventListener('click', () => {

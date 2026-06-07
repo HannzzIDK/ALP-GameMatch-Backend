@@ -27,7 +27,7 @@
   <main class="container detail-body">
     <div class="detail-top anim-up">
       <div class="detail-cover">
-        <img th:src="@{/image/GOW_RAGNAROK.jpeg}" alt="God of war" />
+        <img th:src="${game.image_url}" id="game-image"/>
       </div>
       
       <div class="detail-info">
@@ -39,18 +39,8 @@
     <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
         <p class="mb-0" id="game-release">RILIS: -</p>
     </div>
-    <button class="btn btn-gold" id="btn-fav">Tambahkan ke Favorit</button>
-</div>
-          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
-            <p class="mb-0" id="game-platform"></p>
-          </div>
-          <div class="mb-2 pb-2 border-bottom border-white border-opacity-25">
-            <p class="mb-0" id="game-genre"></p>
-        </div>
-          <button class="btn btn-gold" id="btn-fav" method="post" th:action="@{/favorite}">Tambahkan ke Favorit</button>
-        </div>
-      </div>
-    </div>
+    <button class="btn btn-gold" id="btn-fav" method="post" th:action="@{/favorite}">Tambahkan ke Favorit</button>
+  </div>
 
     <div class="detail-bottom anim-in">
       <div class="detail-section">
