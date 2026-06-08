@@ -85,21 +85,23 @@ if (page === 'login') {
     fetch('/api/v1/auth/google', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ idToken: response.credential })
+      body: JSON.stringify({ 
+          idToken: response.credential,
+          email: userEmail 
+      }) 
     })
     .then(res => res.json())
     .then(data => {
       Store.set('jwt_token', data.token);
-
-      Store.set('gm_user', { email: userEmail }); 
+      Store.set('gm_user', { email: data.email }); 
       
       alert('Login Berhasil!');
-      window.location.href = '/home'; 
+      if (data.isQuizCompleted === true) {
+          window.location.href = '/rekomendasi';
+      } else {
+          window.location.href = '/q1'; 
+      }
     })
-    .catch(err => {
-      console.error(err);
-      alert('Terjadi kesalahan saat login.');
-    });
   };
   };
 
@@ -264,8 +266,34 @@ if (page === 'mm-step4') {
   const findBtn = $('#btn-find');
   if (findBtn) {
     findBtn.addEventListener('click', () => {
-      if (!$('.mm-spec-item.active')) { alert('Pilih spesifikasi perangkatmu terlebih dahulu.'); return; }
-      window.location.href = '/rekomendasi'; 
+      if (!$('.mm-spec-item.active')) { 
+        alert('Pilih spesifikasi perangkatmu terlebih dahulu.'); 
+        return; 
+      }
+      
+      // Ambil user dari localStorage
+      const user = Store.get('gm_user');
+
+      // Tembak API ke Backend untuk mengubah status isQuizCompleted menjadi TRUE
+      if (user && user.email) {
+        fetch('/api/v1/users/quiz-status/complete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: user.email })
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log("Database berhasil diupdate:", data);
+          window.location.href = '/rekomendasi'; // Pindah halaman SETELAH db terupdate
+        })
+        .catch(err => {
+          console.error("Gagal update status DB:", err);
+          window.location.href = '/rekomendasi'; // Tetap pindah sebagai antisipasi error
+        });
+      } else {
+        // Jika tidak ada data user, langsung pindah
+        window.location.href = '/rekomendasi';
+      }
     });
   }
 }
