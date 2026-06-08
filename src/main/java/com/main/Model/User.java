@@ -1,6 +1,8 @@
 package com.main.Model;
 
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -74,5 +76,16 @@ public class User {
 
     public java.util.Set<Game> getFavoriteGames() {
         return this.favoriteGames;
+    }
+
+    @Column(name = "is_quiz_completed", nullable = false)
+    private Boolean isQuizCompleted = false;
+
+    public Boolean isQuizCompleted() {
+        return isQuizCompleted;
+    }
+
+    public void setQuizCompleted(Boolean isQuizCompleted) {
+        this.isQuizCompleted = isQuizCompleted;
     }
 }
