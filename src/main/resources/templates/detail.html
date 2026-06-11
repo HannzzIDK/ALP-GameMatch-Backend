@@ -27,8 +27,12 @@
   <main class="container detail-body">
     <div class="detail-top anim-up">
       <div class="detail-cover">
-        <img th:src="${game.image_url}" id="game-image"/>
+        <img id="game-img" 
+            src="/image/default_cover.jpg" 
+            alt="Cover Game" 
+            style="width: 100%; height: 100%; object-fit: cover; object-position: top;" />
       </div>
+    </div>
       
       <div class="detail-info">
     <h1 class="detail-title mb-4" id="game-title">Memuat...</h1>
@@ -42,15 +46,14 @@
     <button class="btn btn-gold" id="btn-fav" method="post" th:action="@{/favorite}">Tambahkan ke Favorit</button>
   </div>
 
-    <div class="detail-bottom anim-in">
-      <div class="detail-section">
-        <h3 class="detail-section-title">
-          <span class="icon"></span>
-          Tentang <span class="text-blue">Game ini</span>
-        </h3>
-        <p class="detail-desc" id="game-description">
-        </p>
-      </div>
+    <div class="detail-about-box">
+    <h4 class="text-blue">Tentang <span class="text-white">Game ini</span></h4>
+    <hr style="border-color: #333; margin-bottom: 15px;" />
+    
+    <p id="game-about" style="color: #ccc; line-height: 1.6; font-size: 14px;">
+        Memuat deskripsi...
+    </p>
+    </div>  
 
       <div class="detail-section">
         <h3 class="detail-section-title">

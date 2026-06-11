@@ -47,7 +47,7 @@ public class MainController {
     }
 
     @GetMapping("/detail")
-    public String detail() {
+    public String showDetailPage() {
         return "detail";
     }
 }
