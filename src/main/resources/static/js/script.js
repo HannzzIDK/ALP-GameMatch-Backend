@@ -106,14 +106,16 @@ if (page === 'login') {
   };
 
   window.onload = () => {
-    google.accounts.id.initialize({
-      client_id: "1010767334798-p2inesser699mfc3eehp4uo102omod0t.apps.googleusercontent.com",
-      callback: handleGoogleResponse
-    });
-    google.accounts.id.renderButton(
-      document.getElementById("google-btn-container"),
-      { theme: "filled_black", size: "large", shape: "pill", text: "signin_with" }
-    );
+    if (typeof google !== 'undefined') {
+        google.accounts.id.initialize({
+          client_id: "1010767334798-p2inesser699mfc3eehp4uo102omod0t.apps.googleusercontent.com",
+          callback: handleGoogleResponse
+        });
+        google.accounts.id.renderButton(
+          document.getElementById("google-btn-container"),
+          { theme: "filled_black", size: "large", shape: "pill", text: "signin_with" }
+        );
+    }
   };
 
   const btnEmail  = $('#btn-email');
@@ -360,6 +362,7 @@ if (page === 'result') {
   function buildCard(game) {
     const favs = Store.get('gm_favorites') || [];
     const isFav = favs.includes(game.id);
+    const finalId = game.id || game.gameId;
     return `
       <div class="game-card" data-id="${game.id}">
         <img class="game-card-img" src="${game.img}" alt="${game.title}" onerror="this.style.background='#1a1d27';this.removeAttribute('src')" />
@@ -367,7 +370,7 @@ if (page === 'result') {
         <div class="game-card-body">
           <div class="game-card-title">${game.title}</div>
           <div class="game-card-price">${game.price}</div>
-          <a href="/detail?id=${game.id}" class="btn btn-primary btn-sm btn-full">Lihat Detail</a> 
+          <a href="/detail?id=${game.id}" class="btn btn-primary btn-sm btn-full">Detail</a> 
         </div>
       </div>`;
   }
@@ -423,23 +426,51 @@ if (page === 'result') {
     window.location.href = '/q1'; 
   });
 }
+
 // ==================== HALAMAN DETAIL ====================
 if (page === 'detail') {
     const params = new URLSearchParams(location.search);
     const id = params.get('id');
 
-    fetch(`/api/v1/games`) // Tarik semua, lalu cari by ID
-    .then(res => res.json())
-    .then(data => {
-        const game = data.find(g => g.gameId == id);
-        if (game) {
-            document.getElementById('game-title').textContent = game.title;
-            document.getElementById('game-dev').textContent = 'DEVELOPER: ' + game.developer;
-            document.getElementById('game-release').textContent = 'RILIS: ' + (game.releaseDate || '-');
-            document.getElementById('game-about').textContent = game.description;
-            // Tambahkan elemen lain sesuai kebutuhan
-        }
-    })
+    if (!id) {
+        window.location.href = '/home';
+    } else {
+        fetch(`/api/v1/games/${id}`) 
+        .then(res => {
+            if (!res.ok) throw new Error("Game tidak ditemukan");
+            return res.json();
+        })
+        .then(game => {
+            // Gunakan IF agar tidak crash jika ID HTML tidak sengaja terhapus/berbeda
+            const titleEl = document.getElementById('game-title');
+            if (titleEl) titleEl.textContent = game.title || 'Unknown Title';
+            
+            const devEl = document.getElementById('game-dev');
+            if (devEl) devEl.textContent = 'DEVELOPER: ' + (game.developer || '-');
+            
+            const releaseEl = document.getElementById('game-release');
+            if (releaseEl) releaseEl.textContent = 'RILIS: ' + (game.releaseDate || '-');
+            
+            const aboutEl = document.getElementById('game-about');
+            if (aboutEl) aboutEl.textContent = game.description || 'Tidak ada deskripsi.';
+
+            // Render Gambar
+            const imgEl = document.getElementById('game-img');
+            if (imgEl) {
+                const urlGambar = game.imageUrl || game.image_url; 
+                if (urlGambar) {
+                    imgEl.src = urlGambar; 
+                }
+            }
+        })
+
+        .catch(err => {
+            console.error("Error Detail:", err);
+            // Tampilkan pesan error di UI jika server gagal
+            const container = document.querySelector('.detail-info');
+            if (container) container.innerHTML = '<h3 class="text-danger">Gagal memuat detail game.</h3>';
+        });
+
       const favBtn = $('#btn-fav');
       if (favBtn) {
         const gameId = parseInt(id);
@@ -493,7 +524,7 @@ if (page === 'detail') {
       .catch(err => console.error("Gagal load favorit:", err));
       }
     }
-
+  }
 
 
 // ==================== HALAMAN FAVORITE ====================
@@ -605,3 +636,4 @@ $$('.btn-logout').forEach(btn => {
     window.location.href = '/login'; 
   });
 });
+ 
